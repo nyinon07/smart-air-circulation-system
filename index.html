@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AEROFLOW smart air circulation monitoring dashboard">
+  <title>AEROFLOW | Smart Air Circulation</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#">
+        <span class="brand-icon">〰</span>
+        <span><strong>AEROFLOW</strong><small>SMART AIR SYSTEM</small></span>
+      </a>
+
+      <p class="nav-label">MAIN MENU</p>
+      <nav>
+        <button class="nav-link active" data-page="overview">▦ <span>Overview</span></button>
+        <button class="nav-link" data-page="monitoring">◷ <span>Monitoring</span></button>
+        <button class="nav-link" data-page="controls">⏻ <span>Controls</span></button>
+        <button class="nav-link" data-page="devices">⌘ <span>Device Management</span></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <div class="connection-card">
+          <span class="status-dot"></span>
+          <div><strong>Frontend Preview</strong><small>Hardware not connected</small></div>
+        </div>
+        <p class="sidebar-foot">AEROFLOW · PROJECT DEMO</p>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">SMART AIR CIRCULATION SYSTEM</p>
+          <h1 id="page-title">Dashboard Overview</h1>
+          <p class="subheading" id="page-subtitle">Monitor your indoor environment and ventilation system.</p>
+        </div>
+        <div class="topbar-right">
+          <span class="online-pill"><span class="status-dot"></span> DEMO MODE</span>
+          <div class="avatar">AF</div>
+        </div>
+      </header>
+
+      <section class="page active" id="overview-page">
+        <div class="section-heading">
+          <div><h2>Environmental Overview</h2><p>Sample sensor readings for layout preview</p></div>
+          <span class="updated-label">Last update: <span id="last-updated">Just now</span></span>
+        </div>
+
+        <div class="metrics-grid">
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-icon orange">🌡</span><span class="node-tag">NODE 01</span></div>
+            <p class="metric-label">Temperature</p><div class="metric-value">29.4 <small>°C</small></div>
+            <p class="metric-note">Current temperature</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-icon blue">💧</span><span class="node-tag">NODE 01</span></div>
+            <p class="metric-label">Humidity</p><div class="metric-value">68 <small>%</small></div>
+            <p class="metric-note">Relative humidity</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-icon teal">〰</span><span class="node-tag">NODE 02</span></div>
+            <p class="metric-label">Air Velocity</p><div class="metric-value">1.8 <small>m/s</small></div>
+            <p class="metric-note">Airflow reading</p>
+          </article>
+          <article class="metric-card">
+            <div class="metric-top"><span class="metric-icon purple">⌘</span><span class="node-tag">NETWORK</span></div>
+            <p class="metric-label">Active Sensor Nodes</p><div class="metric-value">3 <small>/ 3</small></div>
+            <p class="metric-note">Demo node availability</p>
+          </article>
+        </div>
+
+        <div class="content-grid">
+          <article class="panel chart-panel">
+            <div class="panel-heading"><div><h3>Temperature History</h3><p>Illustrative readings throughout the day</p></div><span class="mini-pill">SAMPLE DATA</span></div>
+            <div class="chart-wrap"><canvas id="temperatureChart"></canvas></div>
+          </article>
+
+          <article class="panel ventilation-panel">
+            <div class="panel-heading"><div><h3>Ventilation Control</h3><p>Main ventilation unit</p></div><span class="state-pill off" id="fan-status">STOPPED</span></div>
+            <div class="fan-display">
+              <div class="fan-symbol" id="fan-symbol">✥</div>
+              <h2 id="fan-title">Fan is OFF</h2>
+              <p id="fan-description">Ventilation is currently stopped.</p>
+            </div>
+            <label class="field-label" for="mode-select">OPERATING MODE</label>
+            <select id="mode-select">
+              <option value="manual">Manual</option>
+              <option value="automatic">Automatic</option>
+            </select>
+            <div class="control-buttons">
+              <button class="button button-on" id="turn-on">⏻ Turn ON</button>
+              <button class="button button-off" id="turn-off">⏻ Turn OFF</button>
+            </div>
+            <p class="demo-note" id="mode-note">Preview only — buttons do not control physical equipment.</p>
+          </article>
+        </div>
+
+        <article class="panel nodes-panel">
+          <div class="panel-heading"><div><h3>Sensor Network</h3><p>Master–slave architecture</p></div><span class="mini-pill">3 NODES</span></div>
+          <div class="node-list">
+            <div class="node-row"><span class="node-icon">▣</span><div class="node-info"><strong>Master Node</strong><small>Main controller · Wi-Fi</small></div><span class="node-online">● Online</span></div>
+            <div class="node-row"><span class="node-icon">🌡</span><div class="node-info"><strong>Slave Node 01</strong><small>Temperature and humidity</small></div><span class="node-online">● Online</span></div>
+            <div class="node-row"><span class="node-icon">〰</span><div class="node-info"><strong>Slave Node 02</strong><small>Environmental monitoring</small></div><span class="node-online">● Online</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" id="monitoring-page">
+        <div class="section-heading"><div><h2>Sensor Monitoring</h2><p>Detailed environmental readings</p></div><span class="mini-pill">SAMPLE DATA</span></div>
+        <div class="metrics-grid">
+          <article class="metric-card"><p class="metric-label">Temperature</p><div class="metric-value">29.4 <small>°C</small></div><p class="metric-note">Slave Node 01</p></article>
+          <article class="metric-card"><p class="metric-label">Relative Humidity</p><div class="metric-value">68 <small>%</small></div><p class="metric-note">Slave Node 01</p></article>
+          <article class="metric-card"><p class="metric-label">Air Velocity</p><div class="metric-value">1.8 <small>m/s</small></div><p class="metric-note">Slave Node 02</p></article>
+          <article class="metric-card"><p class="metric-label">Connected Nodes</p><div class="metric-value">3 <small>/ 3</small></div><p class="metric-note">Master and slave nodes</p></article>
+        </div>
+        <article class="panel chart-panel"><div class="panel-heading"><div><h3>Temperature History</h3><p>Sample data — replace with sensor readings later</p></div></div><div class="chart-wrap tall"><canvas id="monitoringChart"></canvas></div></article>
+        <article class="panel"><div class="panel-heading"><div><h3>Latest Sensor Readings</h3><p>Example table layout</p></div></div>
+          <div class="table-wrap"><table><thead><tr><th>Sensor</th><th>Parameter</th><th>Reading</th><th>Status</th></tr></thead><tbody>
+            <tr><td>Slave 01</td><td>Temperature</td><td>29.4 °C</td><td><span class="node-online">Normal</span></td></tr>
+            <tr><td>Slave 01</td><td>Humidity</td><td>68 %</td><td><span class="node-online">Normal</span></td></tr>
+            <tr><td>Slave 02</td><td>Air velocity</td><td>1.8 m/s</td><td><span class="node-online">Normal</span></td></tr>
+          </tbody></table></div>
+        </article>
+      </section>
+
+      <section class="page" id="controls-page">
+        <div class="section-heading"><div><h2>System Controls</h2><p>Manage the ventilation unit</p></div></div>
+        <article class="panel control-page-panel">
+          <div class="fan-display large"><div class="fan-symbol" id="fan-symbol-control">✥</div><h2 id="fan-title-control">Fan is OFF</h2><p>Ventilation unit · Main controller</p><span class="state-pill off" id="fan-status-control">STOPPED</span></div>
+          <div class="control-settings"><label class="field-label" for="mode-select-control">OPERATING MODE</label><select id="mode-select-control"><option value="manual">Manual</option><option value="automatic">Automatic</option></select>
+            <div class="control-buttons"><button class="button button-on" id="turn-on-control">⏻ Turn ON</button><button class="button button-off" id="turn-off-control">⏻ Turn OFF</button></div>
+            <p class="demo-note">These are frontend demonstration controls only. Hardware integration will be added later.</p>
+          </div>
+        </article>
+      </section>
+
+      <section class="page" id="devices-page">
+        <div class="section-heading"><div><h2>Device Management</h2><p>Overview of the master–slave sensor network</p></div></div>
+        <article class="panel nodes-panel">
+          <div class="node-list">
+            <div class="node-row"><span class="node-icon">▣</span><div class="node-info"><strong>Master Node</strong><small>Central controller · Wireless gateway</small></div><span class="node-online">● Demo online</span></div>
+            <div class="node-row"><span class="node-icon">🌡</span><div class="node-info"><strong>Slave Node 01</strong><small>Temperature and humidity sensor</small></div><span class="node-online">● Demo online</span></div>
+            <div class="node-row"><span class="node-icon">〰</span><div class="node-info"><strong>Slave Node 02</strong><small>Additional environmental sensor</small></div><span class="node-online">● Demo online</span></div>
+          </div>
+        </article>
+        <div class="notice"><strong>Integration reminder</strong><p>Device connection indicators currently show sample status. Actual online/offline status will be read from the microcontroller after hardware integration.</p></div>
+      </section>
+
+      <footer>© 2026 AEROFLOW · IoT SMART AIR CIRCULATION SYSTEM <span>FRONTEND PROTOTYPE</span></footer>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
