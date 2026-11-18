@@ -14,14 +14,13 @@
   --text: #0a2538;
   --muted: #5c7a8f;
   --border: #d8e9f3;
-}
-body, html, * {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
 }
 .login-brand strong, .brand strong {
-  font-family: 'Lucidity Condensed', 'Montserrat', sans-serif;
+  font-family: 'Lucidity Condensed', 'Segoe UI', Arial, sans-serif;
   font-weight: normal;
   letter-spacing: 1px;
+}
 }
 h1, h2, h3, .metric-value {
   font-family:'Montserrat', sans-serif;
