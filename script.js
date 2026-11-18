@@ -189,7 +189,7 @@ function createCharts() {
     type: "line",
     data: { labels: historyLabels, datasets: [{
       label: "Temperature (°C)", data: historyValues,
-      borderColor: "#22a88e", backgroundColor: "rgba(34, 168, 142, 0.12)",
+      borderColor: "#0F94D2", backgroundColor: "rgba(15, 148, 210, 0.12)",
       fill: true, tension: 0.38, borderWidth: 2, pointRadius: 3
     }]},
     options: {
