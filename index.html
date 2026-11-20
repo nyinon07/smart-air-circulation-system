@@ -1,55 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AMIHAN smart air circulation monitoring dashboard">
   <title>AMIHAN | Smart Air Circulation</title>
-  <link rel="stylesheet" href="style.css" />
-  <script src="https://jsdelivr.net"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
   <section id="login-screen" class="login-screen">
-    <div class="login-card">
-      <div class="login-brand">
-        <div class="brand-icon">〰</div>
-        <div>
-          <strong>AMIHAN</strong>
-          <small>SMART AIR SYSTEM</small>
-        </div>
-      </div>
-
+    <form id="login-form" class="login-card">
+      <div class="login-brand"><img src="logo amihan.svg" alt="AMIHAN Logo" style="width: 72px; height: 72px; object-fit: contain;"><div><strong>AMIHAN</strong><small>SMART AIR SYSTEM</small></div></div>
       <p class="eyebrow">ADMINISTRATOR ACCESS</p>
       <h1>Welcome back</h1>
       <p class="login-intro">Sign in to access the air circulation dashboard.</p>
-
-      <form id="login-form">
-        <label for="login-email">Email address</label>
-        <input type="email" id="login-email" placeholder="admin@amihan.com" required />
-
-        <label for="login-password">Password</label>
-        <input type="password" id="login-password" placeholder="••••••••" required />
-
-        <p id="login-message" class="form-message"></p>
-
-        <button type="submit" class="button button-on login-submit">Sign in</button>
-      </form>
-
+      <label for="login-email">Email address</label>
+      <input id="login-email" type="email" autocomplete="username" placeholder="admin@example.com" required>
+      <label for="login-password">Password</label>
+      <input id="login-password" type="password" autocomplete="current-password" placeholder="Enter your password" required>
+      <button class="button button-on login-submit" type="submit">Sign in</button>
+      <p id="login-message" class="form-message" role="status"></p>
       <small class="login-foot">Authorized project administrator only</small>
-    </div>
+    </form>
   </section>
 
-  <div id="app-shell" class="app-shell" hidden>
-    
+  <div class="app-shell" id="app-shell" hidden>
     <aside class="sidebar">
-      <a href="#" class="brand">
-        <div class="brand-icon">〰</div>
-        <div>
-          <strong>AMIHAN</strong>
-          <small>SMART AIR SYSTEM</small>
-        </div>
-      </a>
-
+      <a class="brand" href="#"><img src="logo amihan.svg" alt="AMIHAN Logo" style="width: 72px; height: 72px; object-fit: contain;"><span><strong>AMIHAN</strong><small>SMART AIR SYSTEM</small></span></a>
       <p class="nav-label">MAIN MENU</p>
       <nav>
         <button class="nav-link active" data-page="overview">▦ <span>Overview</span></button>
@@ -57,16 +35,8 @@
         <button class="nav-link" data-page="controls">⏻ <span>Controls</span></button>
         <button class="nav-link" data-page="devices">⌘ <span>Device Management</span></button>
       </nav>
-
       <div class="sidebar-bottom">
-        <div class="connection-card">
-          <span id="connection-dot" class="status-dot"></span>
-          <div>
-            <strong id="connection-label">Connecting...</strong>
-            <small>Firebase Realtime Database</small>
-          </div>
-        </div>
-
+        <div class="connection-card"><span class="status-dot" id="connection-dot"></span><div><strong id="connection-label">Connecting...</strong><small>Firebase Realtime Database</small></div></div>
         <button id="logout-button" class="logout-button">↪ Sign out</button>
         <p class="sidebar-foot">AEROFLOW · PROJECT DEMO</p>
       </div>
@@ -74,184 +44,64 @@
 
     <main class="main-content">
       <header class="topbar">
-        <div>
-          <p class="eyebrow">SMART AIR CIRCULATION SYSTEM</p>
-          <h1 id="page-title">Dashboard Overview</h1>
-          <p id="page-subtitle" class="subheading">Monitor your indoor environment and ventilation system.</p>
-        </div>
-        <div class="topbar-right">
-          <span id="top-status" class="online-pill">CONNECTING</span>
-          <div class="avatar">AF</div>
-        </div>
+        <div><p class="eyebrow">SMART AIR CIRCULATION SYSTEM</p><h1 id="page-title">Dashboard Overview</h1><p class="subheading" id="page-subtitle">Monitor your indoor environment and ventilation system.</p></div>
+        <div class="topbar-right"><span class="online-pill" id="top-status">CONNECTING</span><div class="avatar">AF</div></div>
       </header>
 
-      <section id="overview-page" class="page active">
-        <div class="section-heading">
-          <div>
-            <h2>Environmental Overview</h2>
-            <p>Readings from Firebase Realtime Database</p>
-          </div>
-          <span class="updated-label">Last update: <strong id="last-updated">Waiting...</strong></span>
-        </div>
-
+      <section class="page active" id="overview-page">
+        <div class="section-heading"><div><h2>Environmental Overview</h2><p>Readings from Firebase Realtime Database</p></div><span class="updated-label">Last update: <span id="last-updated">Waiting...</span></span></div>
         <div class="metrics-grid">
-          <div class="metric-card">
-            <div class="metric-top">
-              <div class="metric-icon orange">🌡</div>
-              <span class="node-tag">NODE 01</span>
-            </div>
-            <p class="metric-label">Temperature</p>
-            <div class="metric-value"><span id="temperature-value">--</span> <small>°C</small></div>
-            <p class="metric-note">Current temperature</p>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-top">
-              <div class="metric-icon blue">💧</div>
-              <span class="node-tag">NODE 01</span>
-            </div>
-            <p class="metric-label">Humidity</p>
-            <div class="metric-value"><span id="humidity-value">--</span> <small>%</small></div>
-            <p class="metric-note">Relative humidity</p>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-top">
-              <div class="metric-icon teal">〰</div>
-              <span class="node-tag">NODE 02</span>
-            </div>
-            <p class="metric-label">Air Velocity</p>
-            <div class="metric-value"><span id="air-velocity-value">--</span> <small>m/s</small></div>
-            <p class="metric-note">Airflow reading</p>
-          </div>
-
-          <div class="metric-card">
-            <div class="metric-top">
-              <div class="metric-icon purple">⌘</div>
-              <span class="node-tag">NETWORK</span>
-            </div>
-            <p class="metric-label">Active Sensor Nodes</p>
-            <div class="metric-value"><span id="active-nodes-value">--</span> <small>/ 3</small></div>
-            <p class="metric-note">Reported device status</p>
-          </div>
+          <article class="metric-card"><div class="metric-top"><span class="metric-icon orange">🌡</span><span class="node-tag">NODE 01</span></div><p class="metric-label">Temperature</p><div class="metric-value"><span id="temperature-value">--</span> <small>°C</small></div><p class="metric-note">Current temperature</p></article>
+          <article class="metric-card"><div class="metric-top"><span class="metric-icon blue">💧</span><span class="node-tag">NODE 01</span></div><p class="metric-label">Humidity</p><div class="metric-value"><span id="humidity-value">--</span> <small>%</small></div><p class="metric-note">Relative humidity</p></article>
+          <article class="metric-card"><div class="metric-top"><span class="metric-icon purple">⌘</span><span class="node-tag">NETWORK</span></div><p class="metric-label">Active Sensor Nodes</p><div class="metric-value"><span id="active-nodes-value">--</span> <small>/ 2</small></div><p class="metric-note">Reported device status</p></article>
         </div>
-
         <div class="content-grid">
-          <div class="panel">
-            <div class="panel-heading">
-              <div>
-                <h3>Temperature History</h3>
-                <p>Recent values received by this page</p>
-              </div>
-              <span class="mini-pill">LIVE DATA</span>
-            </div>
-            <div class="chart-wrap">
-              <canvas id="temperatureChart"></canvas>
-            </div>
-          </div>
-
-          <div class="panel">
-            <div class="panel-heading">
-              <div>
-                <h3>Ventilation Control</h3>
-                <p>Main ventilation unit</p>
-              </div>
-              <span id="fan-status" class="state-pill off">UNKNOWN</span>
-            </div>
-
-            <div class="fan-display">
-              <div id="fan-symbol" class="fan-symbol">✿</div>
-              <h2 id="fan-title">Waiting for status</h2>
-              <p id="fan-description">Status will appear when Firebase data loads.</p>
-            </div>
-
-            <label for="mode-select" class="field-label">OPERATING MODE</label>
-            <select id="mode-select">
-              <option value="MANUAL">Manual</option>
-              <option value="AUTOMATIC">Automatic</option>
-            </select>
-
-            <div class="control-buttons">
-              <button id="turn-on" class="button button-on">⏻ Turn ON</button>
-              <button id="turn-off" class="button button-off">⏻ Turn OFF</button>
-            </div>
-            <p id="control-message" class="demo-note">Commands are sent to Firebase. Physical operation requires the ESP32 integration.</p>
-          </div>
+          <article class="panel chart-panel"><div class="panel-heading"><div><h3>Temperature History</h3><p>Recent values received by this page</p></div><span class="mini-pill">LIVE DATA</span></div><div class="chart-wrap"><canvas id="temperatureChart"></canvas></div></article>
+          <article class="panel ventilation-panel">
+            <div class="panel-heading"><div><h3>Ventilation Control</h3><p>Main ventilation unit</p></div><span class="state-pill off" id="fan-status">UNKNOWN</span></div>
+            <div class="fan-display"><div class="fan-symbol" id="fan-symbol"><img src="Fan.svg" alt="Exhaust Fan" style="width: 48px; height: 48px; object-fit: contain; vertical-align: middle;"></div><h2 id="fan-title">Waiting for status</h2><p id="fan-description">Status will appear when Firebase data loads.</p></div>
+            <label class="field-label" for="mode-select">OPERATING MODE</label>
+            <select id="mode-select"><option value="MANUAL">Manual</option><option value="AUTOMATIC">Automatic</option></select>
+            <div class="control-buttons"><button class="button button-on" id="turn-on" type="button">⏻ Turn ON</button><button class="button button-off" id="turn-off" type="button">⏻ Turn OFF</button></div>
+            <p class="demo-note" id="control-message">Commands are sent to Firebase. Physical operation requires the ESP32 integration.</p>
+          </article>
         </div>
-
-        <div class="panel nodes-panel">
-          <div class="panel-heading">
-            <div>
-              <h3>Sensor Network</h3>
-              <p>Master–slave architecture</p>
-            </div>
-            <span class="mini-pill">DEVICE STATUS</span>
-          </div>
-
-          <div class="node-list">
-            <div class="node-row">
-              <div class="node-icon">▣</div>
-              <div class="node-info">
-                <strong>Master Node</strong>
-                <small>Main controller · Wi-Fi</small>
-              </div>
-              <span id="master-status" class="node-offline">Unknown</span>
-            </div>
-
-            <div class="node-row">
-              <div class="node-icon">🌡</div>
-              <div class="node-info">
-                <strong>Slave Node 01</strong>
-                <small>Temperature and humidity</small>
-              </div>
-              <span id="slave1-status" class="node-offline">Unknown</span>
-            </div>
-
-            <div class="node-row">
-              <div class="node-icon">〰</div>
-              <div class="node-info">
-                <strong>Slave Node 02</strong>
-                <small>Airflow / environmental sensor</small>
-              </div>
-              <span id="slave2-status" class="node-offline">Unknown</span>
-            </div>
-          </div>
-        </div>
+        <article class="panel nodes-panel"><div class="panel-heading"><div><h3>Sensor Network</h3><p>Master–slave architecture</p></div><span class="mini-pill">DEVICE STATUS</span></div><div class="node-list">
+          <div class="node-row"><span class="node-icon">▣</span><div class="node-info"><strong>Master Node</strong><small>Main controller · Wi-Fi</small></div><span class="node-state" id="master-status">Unknown</span></div>
+          <div class="node-row"><span class="node-icon">🌡</span><div class="node-info"><strong>Slave Node 01</strong><small>Temperature and humidity</small></div><span class="node-state" id="slave1-status">Unknown</span></div>
+        </div></article>
       </section>
 
-      <section id="monitoring-page" class="page">
-        <div class="section-heading">
-          <div>
-            <h2>Sensor Monitoring</h2>
-            <p>Live values read from Firebase</p>
-          </div>
-          <span class="mini-pill">LIVE DATA</span>
-        </div>
-
+      <section class="page" id="monitoring-page">
+        <div class="section-heading"><div><h2>Sensor Monitoring</h2><p>Live values read from Firebase</p></div><span class="mini-pill">LIVE DATA</span></div>
         <div class="metrics-grid">
-          <div class="metric-card">
-            <p class="metric-label">Temperature</p>
-            <div class="metric-value"><span id="temperature-value-2">--</span> <small>°C</small></div>
-            <p class="metric-note">Slave Node 01</p>
-          </div>
-          <div class="metric-card">
-            <p class="metric-label">Relative Humidity</p>
-            <div class="metric-value"><span id="humidity-value-2">--</span> <small>%</small></div>
-            <p class="metric-note">Slave Node 01</p>
-          </div>
-          <div class="metric-card">
-            <p class="metric-label">Air Velocity</p>
-            <div class="metric-value"><span id="air-velocity-value-2">--</span> <small>m/s</small></div>
-            <p class="metric-note">Slave Node 02</p>
-          </div>
-          <div class="metric-card">
-            <p class="metric-label">Connected Nodes</p>
-            <div class="metric-value"><span id="active-nodes-value-2">--</span> <small>/ 3</small></div>
-            <p class="metric-note">Master and slave nodes</p>
-          </div>
+          <article class="metric-card"><p class="metric-label">Temperature</p><div class="metric-value"><span id="temperature-value-2">--</span> <small>°C</small></div><p class="metric-note">Slave Node 01</p></article>
+          <article class="metric-card"><p class="metric-label">Relative Humidity</p><div class="metric-value"><span id="humidity-value-2">--</span> <small>%</small></div><p class="metric-note">Slave Node 01</p></article>
+          <article class="metric-card"><p class="metric-label">Connected Nodes</p><div class="metric-value"><span id="active-nodes-value-2">--</span> <small>/ 2</small></div><p class="metric-note">Master and slave nodes</p></article>
         </div>
+        <article class="panel chart-panel"><div class="panel-heading"><div><h3>Temperature History</h3><p>Values received while this page is open</p></div></div><div class="chart-wrap tall"><canvas id="monitoringChart"></canvas></div></article>
+      </section>
 
-        <div class="panel">
-          <div class="panel-heading">
-            <div>
-              <h3>Temperature History</h3>
+      <section class="page" id="controls-page">
+        <div class="section-heading"><div><h2>System Controls</h2><p>Send ventilation commands to Firebase</p></div></div>
+        <article class="panel control-page-panel"><div class="fan-display large"><div class="fan-symbol" id="fan-symbol-control"><img src="Fan.svg" alt="Exhaust Fan" style="width: 96px; height: 96px; object-fit: contain; vertical-align: middle;"></div><h2 id="fan-title-control">Waiting for status</h2><p>Ventilation unit · Main controller</p><span class="state-pill off" id="fan-status-control">UNKNOWN</span></div><div class="control-settings">
+          <label class="field-label" for="mode-select-control">OPERATING MODE</label><select id="mode-select-control"><option value="MANUAL">Manual</option><option value="AUTOMATIC">Automatic</option></select>
+          <div class="control-buttons"><button class="button button-on" id="turn-on-control" type="button">⏻ Turn ON</button><button class="button button-off" id="turn-off-control" type="button">⏻ Turn OFF</button></div>
+          <p class="demo-note" id="control-message-2">Commands are sent to Firebase. Physical operation requires the ESP32 integration.</p>
+        </div></article>
+      </section>
+
+      <section class="page" id="devices-page">
+        <div class="section-heading"><div><h2>Device Management</h2><p>Device status read from Firebase</p></div></div>
+        <article class="panel nodes-panel"><div class="node-list">
+          <div class="node-row"><span class="node-icon">▣</span><div class="node-info"><strong>Master Node</strong><small>Central controller · Wireless gateway</small></div><span class="node-state" id="master-status-2">Unknown</span></div>
+          <div class="node-row"><span class="node-icon">🌡</span><div class="node-info"><strong>Slave Node 01</strong><small>Temperature and humidity sensor</small></div><span class="node-state" id="slave1-status-2">Unknown</span></div>
+        </div></article>
+        <div class="notice"><strong>Hardware integration status</strong><p>Firebase is connected to this website. The device statuses will represent real hardware only after the ESP32 begins updating these database values.</p></div>
+      </section>
+      <footer>© 2026 AMIHAN · IoT SMART AIR CIRCULATION SYSTEM <span>FIREBASE CONNECTED</span></footer>
+    </main>
+  </div>
+  <script type="module" src="script.js"></script>
+</body>
+</html>
