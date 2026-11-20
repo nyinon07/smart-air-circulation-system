@@ -67,11 +67,9 @@ input, button, body, p, span, label, .metric-value {
 }
 
 .login-screen {
-  min-height: 100vh;
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  background: linear-gradient(135deg, #101d2c, #1c3d4c);
+  background: linear-gradient(125deg, #d6edfa 0%, #bfe3f5 30%, #c9f0e6 65%, #e1f1fb 100%);
+  background-size: 220% 220%;
+  animation: amihanAirDrift 22s ease-in-out infinite;
 }
 
 .login-card {
