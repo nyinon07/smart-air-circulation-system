@@ -1,16 +1,16 @@
 /* BASE & RESET - 36 */
-/* TYPOGRAPHY - 57 */
-/* LOGIN SCREEN - 83 */
-/* APP SHELL & SIDEBAR - 187 */
-/* MAIN CONTENT & TOPBAR - 314 */
-/* PAGES & HEADINGS - 378 */
-/* METRICS GRID - 395 */
-/* PANELS & CHARTS - 493 */
-/* FAN CONTROLS & STATES - 529 */
-/* NODES LIST - 642 */
-/* CONTROL PAGE & NOTICE - 705 */
-/* FOOTER - 741 */
-/* RESPONSIVE MEDIA QUERIES - 757 */
+/* TYPOGRAPHY - 77 */
+/* LOGIN SCREEN - 103 */
+/* APP SHELL & SIDEBAR - 207 */
+/* MAIN CONTENT & TOPBAR - 340 */
+/* PAGES & HEADINGS - 396 */
+/* METRICS GRID - 429 */
+/* PANELS & CHARTS - 533 */
+/* FAN CONTROLS & STATES - 568 */
+/* NODES LIST - 678 */
+/* CONTROL PAGE & NOTICE - 740 */
+/* FOOTER - 775 */
+/* RESPONSIVE MEDIA QUERIES - 791 */
 
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
 
@@ -69,6 +69,16 @@ body {
     animation: none;
     background: var(--bg);
   }
+}
+
+button,
+select,
+input {
+  font: inherit;
+}
+
+[hidden] {
+  display: none !important;
 }
 
 /* TYPOGRAPHY */
@@ -429,6 +439,23 @@ h1 {
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 15px;
   margin-bottom: 18px;
+}
+
+.metric-card,
+.panel {
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 13px;
+  box-shadow: 0 3px 14px #1d304008;
+}
+
+@supports not (backdrop-filter: blur(10px)) {
+  .metric-card,
+  .panel {
+    background: rgba(255, 255, 255, 0.94);
+  }
 }
 
 .metric-card {
