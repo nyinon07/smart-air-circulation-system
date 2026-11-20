@@ -39,7 +39,6 @@ body {
   animation: amihanAirDrift 22s ease-in-out infinite;
 }
 
-/* Soft colored glows behind the content so the frosted glass has something to blur */
 body::before {
   content: "";
   position: fixed;
@@ -61,7 +60,6 @@ button, select, input { font: inherit; }
 
 [hidden] { display: none !important; }
 
-/* TYPOGRAPHY */
 h1, h2, h3 {
   font-family: 'Lucidity Condensed', 'Segoe UI', Arial, sans-serif;
   letter-spacing: 0.5px;
@@ -71,7 +69,6 @@ input, button, body, p, span, label, .metric-value {
   font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif !important;
 }
 
-/* LOGIN SCREEN */
 .login-screen {
   min-height: 100vh;
   display: grid;
@@ -155,7 +152,6 @@ input, button, body, p, span, label, .metric-value {
 .form-message { min-height: 16px; font-size: 11px; color: #168565; }
 .form-message.error { color: #b34f4f; }
 
-/* APP SHELL & SIDEBAR */
 .app-shell { min-height: 100vh; position: relative; }
 
 .sidebar {
@@ -296,7 +292,6 @@ h1 { font-size: clamp(25px, 3vw, 32px); margin: 0; letter-spacing: -0.8px; }
   font-size: 12px;
 }
 
-/* PAGES & HEADINGS */
 .page { display: none; }
 .page.active { display: block; }
 
@@ -311,7 +306,6 @@ h1 { font-size: clamp(25px, 3vw, 32px); margin: 0; letter-spacing: -0.8px; }
 .section-heading h2 { font-size: 17px; margin: 0; }
 .updated-label { color: var(--muted); font-size: 11px; }
 
-/* METRICS GRID */
 .metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -319,7 +313,6 @@ h1 { font-size: clamp(25px, 3vw, 32px); margin: 0; letter-spacing: -0.8px; }
   margin-bottom: 18px;
 }
 
-/* FROSTED GLASS */
 .metric-card,
 .panel {
   background: rgba(255, 255, 255, 0.45);
@@ -381,7 +374,6 @@ h1 { font-size: clamp(25px, 3vw, 32px); margin: 0; letter-spacing: -0.8px; }
 
 .metric-note { font-size: 10px; color: #9aa6b1; margin: 7px 0 0; }
 
-/* PANELS & CHARTS */
 .content-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.55fr) minmax(280px, 1fr);
@@ -398,7 +390,6 @@ h1 { font-size: clamp(25px, 3vw, 32px); margin: 0; letter-spacing: -0.8px; }
 .chart-wrap { height: 245px; position: relative; }
 .chart-wrap.tall { height: 330px; }
 
-/* FAN CONTROLS & STATES */
 .state-pill {
   font-size: 9px;
   font-weight: 800;
@@ -468,7 +459,6 @@ select {
 
 .demo-note { font-size: 10px; color: #7d8d9a; line-height: 1.5; margin: 11px 0 0; }
 
-/* NODES LIST */
 .nodes-panel { margin-bottom: 18px; }
 .node-list { display: grid; }
 
@@ -500,7 +490,6 @@ select {
 .node-online  { color: #15966f; font-size: 10px; white-space: nowrap; }
 .node-offline { color: #b34f4f; font-size: 10px; white-space: nowrap; }
 
-/* CONTROL PAGE & NOTICE */
 .control-page-panel {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -529,7 +518,6 @@ select {
 
 .notice p { margin: 6px 0 0; line-height: 1.6; }
 
-/* FOOTER */
 footer {
   display: flex;
   justify-content: space-between;
@@ -542,7 +530,6 @@ footer {
 
 footer span { color: #168c75; font-weight: 750; }
 
-/* RESPONSIVE MEDIA QUERIES */
 @media (max-width: 1100px) {
   .main-content { padding: 28px 25px; }
   .metrics-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
