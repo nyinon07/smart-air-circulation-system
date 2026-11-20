@@ -121,17 +121,59 @@ function startDatabaseListeners() {
     });
   });
 
-  createCharts();
+ function makeChartConfig() {
+  return {
+    type: "line",
+    data: {
+      labels: historyLabels,
+      datasets: [{
+        label: "Temperature (°C)",
+        data: historyValues,
+        borderColor: "#00588A",
+        backgroundColor: (context) => {
+          const { chart } = context;
+          const { ctx, chartArea } = chart;
+          if (!chartArea) return "rgba(15, 148, 210, 0.25)";
+          const gradient = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          gradient.addColorStop(0, "rgba(15, 148, 210, 0.55)");
+          gradient.addColorStop(1, "rgba(15, 148, 210, 0.05)");
+          return gradient;
+        },
+        fill: true,
+        tension: 0.38,
+        borderWidth: 3,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#ffffff",
+        pointBorderColor: "#00588A",
+        pointBorderWidth: 2
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      animation: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: {
+          grid: { color: "rgba(10, 37, 56, 0.12)" },
+          ticks: { color: "#0a2538", font: { size: 11, weight: "600" } },
+          title: { display: true, text: "°C", color: "#0a2538" }
+        },
+        x: {
+          grid: { color: "rgba(10, 37, 56, 0.06)" },
+          ticks: { color: "#0a2538", font: { size: 11 }, maxTicksLimit: 6 }
+        }
+      }
+    }
+  };
 }
 
-function setText(ids, value) {
-  ids.forEach(id => {
-    const element = document.getElementById(id);
-    if (element) element.textContent = value;
-  });
+function createCharts() {
+  if (typeof Chart === "undefined") return;
+  temperatureChart = new Chart(document.getElementById("temperatureChart"), makeChartConfig());
+  monitoringChart = new Chart(document.getElementById("monitoringChart"), makeChartConfig());
 }
-function formatValue(value) {
-  return value === undefined || value === null ? "--" : String(value);
 }
 function setFanDisplay(state) {
   const isOn = state === "ON";
