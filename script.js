@@ -2,8 +2,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebas
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
 
-// 1) Paste your Firebase web app configuration values below.
-// Get them from Firebase Console > Project settings > Your apps > Config.
 const firebaseConfig = {
   apiKey: "AIzaSyA3_vVKLks2cuhK_4F3F-gA1is4EGZUTbM",
   authDomain: "aeroflow-smart-system.firebaseapp.com",
@@ -214,7 +212,6 @@ function addTemperaturePoint(value) {
   });
 }
 
-// Dashboard navigation
 const pageDetails = {
   overview: ["Dashboard Overview", "Monitor your indoor environment and ventilation system."],
   monitoring: ["Sensor Monitoring", "View live environmental readings and trends."],
