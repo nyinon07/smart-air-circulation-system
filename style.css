@@ -38,20 +38,37 @@
   box-sizing: border-box;
 }
 
+@keyframes amihanAirDrift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
 body {
   margin: 0;
-  background: var(--bg);
   color: var(--text);
+  background: linear-gradient(
+    125deg,
+    #eef7fc 0%,
+    #e2f2fa 38%,
+    #e6f6f3 70%,
+    #f2f8fc 100%
+  );
+  background-size: 220% 220%;
+  animation: amihanAirDrift 22s ease-in-out infinite;
 }
 
-button,
-select,
-input {
-  font: inherit;
-}
-
-[hidden] {
-  display: none !important;
+@media (prefers-reduced-motion: reduce) {
+  body {
+    animation: none;
+    background: var(--bg);
+  }
 }
 
 /* TYPOGRAPHY */
@@ -414,17 +431,24 @@ h1 {
   margin-bottom: 18px;
 }
 
-.metric-card,
-.panel {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  box-shadow: 0 3px 14px #1d304008;
-}
-
 .metric-card {
   padding: 18px;
   min-width: 0;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.metric-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(10, 37, 56, 0.08);
+  border-color: var(--border);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .metric-card,
+  .metric-card:hover {
+    transition: none;
+    transform: none;
+  }
 }
 
 .metric-top {
