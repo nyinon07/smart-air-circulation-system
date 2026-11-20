@@ -31,9 +31,6 @@
 html { min-height: 100%; }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-  color: var(--text);
   background: linear-gradient(125deg, #d6edfa 0%, #bfe3f5 30%, #c9f0e6 65%, #e1f1fb 100%);
   background-size: 220% 220%;
   animation: amihanAirDrift 22s ease-in-out infinite;
