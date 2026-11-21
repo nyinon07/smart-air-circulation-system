@@ -81,7 +81,6 @@ function startDatabaseListeners() {
     const sensors = snapshot.val() || {};
     setText(["temperature-value", "temperature-value-2"], formatValue(sensors.temperature));
     setText(["humidity-value", "humidity-value-2"], formatValue(sensors.humidity));
-    setText(["air-velocity-value", "air-velocity-value-2"], formatValue(sensors.airVelocity));
     document.getElementById("last-updated").textContent = new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"});
     if (typeof sensors.temperature === "number") addTemperaturePoint(sensors.temperature);
   });
