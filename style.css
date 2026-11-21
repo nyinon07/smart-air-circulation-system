@@ -67,6 +67,10 @@ input, button, body, p, span, label, .metric-value {
 }
 
 .login-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 24px;
   background: linear-gradient(125deg, #d6edfa 0%, #bfe3f5 30%, #c9f0e6 65%, #e1f1fb 100%);
   background-size: 220% 220%;
   animation: amihanAirDrift 22s ease-in-out infinite;
@@ -146,6 +150,27 @@ input, button, body, p, span, label, .metric-value {
 
 .form-message { min-height: 16px; font-size: 11px; color: #168565; }
 .form-message.error { color: #b34f4f; }
+
+.auth-switch {
+  margin: 14px 0 0;
+  font-size: 12px;
+  text-align: center;
+  color: var(--muted);
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--teal-dark);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.link-button:hover {
+  color: var(--teal);
+}
 
 .app-shell { min-height: 100vh; position: relative; }
 
