@@ -97,8 +97,17 @@ signupForm?.addEventListener("submit", async (event) => {
   if (signupMessage) signupMessage.textContent = "Creating account...";
   try {
     await createUserWithEmailAndPassword(auth, email, password);
-    if (signupMessage) signupMessage.textContent = "";
+    await signOut(auth);
     signupForm.reset();
+    if (signupForm && loginForm) {
+      signupForm.hidden = true;
+      loginForm.hidden = false;
+    }
+    if (loginMessage) {
+      loginMessage.textContent = "Account created! Please sign in.";
+      loginMessage.className = "form-message";
+    }
+    if (signupMessage) signupMessage.textContent = "";
   } catch (error) {
     if (signupMessage) {
       signupMessage.textContent = friendlyAuthError(error.code);
@@ -106,7 +115,6 @@ signupForm?.addEventListener("submit", async (event) => {
     }
   }
 });
-
 document.getElementById("logout-button")?.addEventListener("click", () => {
   if (signupForm && loginForm) {
     signupForm.hidden = true;
