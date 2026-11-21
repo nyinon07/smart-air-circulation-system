@@ -151,16 +151,16 @@ function startDatabaseListeners() {
 
   onValue(ref(database, "devices"), (snapshot) => {
     const devices = snapshot.val() || {};
-    const nodes = ["master", "slave1", "slave2"];
+    const nodes = ["master", "slave1"];
     const onlineCount = nodes.filter(key => String(devices[key] || "").toLowerCase() === "online").length;
     setText(["active-nodes-value", "active-nodes-value-2"], String(onlineCount));
     nodes.forEach(key => {
       const value = devices[key] || "unknown";
       const ids = key === "master" ? ["master-status", "master-status-2"]
-        : key === "slave1" ? ["slave1-status", "slave1-status-2"]
-        : ["slave2-status", "slave2-status-2"];
+        : ["slave1-status", "slave1-status-2"];
       ids.forEach(id => {
         const element = document.getElementById(id);
+        if (!element) return;
         element.textContent = String(value);
         element.className = "node-state " + (String(value).toLowerCase() === "online" ? "node-online" : "node-offline");
       });
