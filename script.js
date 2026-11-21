@@ -1,6 +1,11 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -13,6 +18,10 @@ const firebaseConfig = {
   appId: "1:488959251500:web:de0421c6cde04418282d89"
 };
 
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const database = getDatabase(app);
+
 const loginScreen = document.getElementById("login-screen");
 const appShell = document.getElementById("app-shell");
 const loginForm = document.getElementById("login-form");
@@ -20,65 +29,89 @@ const loginMessage = document.getElementById("login-message");
 const signupForm = document.getElementById("signup-form");
 const signupMessage = document.getElementById("signup-message");
 
-// Toggle between Sign In and Sign Up forms
-document.getElementById("show-signup").addEventListener("click", () => {
-  loginForm.hidden = true;
-  signupForm.hidden = false;
-  loginMessage.textContent = "";
+function setText(ids, value) {
+  ids.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  });
+}
+
+function formatValue(val, decimals = 1) {
+  if (typeof val === "number" && !Number.isNaN(val)) {
+    return val.toFixed(decimals);
+  }
+  return "--";
+}
+
+document.getElementById("show-signup")?.addEventListener("click", () => {
+  if (loginForm && signupForm) {
+    loginForm.hidden = true;
+    signupForm.hidden = false;
+  }
+  if (loginMessage) loginMessage.textContent = "";
 });
 
-document.getElementById("show-login").addEventListener("click", () => {
-  signupForm.hidden = true;
-  loginForm.hidden = false;
-  signupMessage.textContent = "";
+document.getElementById("show-login")?.addEventListener("click", () => {
+  if (signupForm && loginForm) {
+    signupForm.hidden = true;
+    loginForm.hidden = false;
+  }
+  if (signupMessage) signupMessage.textContent = "";
 });
 
-// Handle Sign In
-loginForm.addEventListener("submit", async (event) => {
+loginForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  loginMessage.textContent = "Signing in...";
-  loginMessage.className = "form-message";
+  if (loginMessage) {
+    loginMessage.textContent = "Signing in...";
+    loginMessage.className = "form-message";
+  }
   const email = document.getElementById("login-email").value.trim();
   const password = document.getElementById("login-password").value;
   try {
     await signInWithEmailAndPassword(auth, email, password);
-    loginMessage.textContent = "";
+    if (loginMessage) loginMessage.textContent = "";
   } catch (error) {
-    loginMessage.textContent = friendlyAuthError(error.code);
-    loginMessage.className = "form-message error";
+    if (loginMessage) {
+      loginMessage.textContent = friendlyAuthError(error.code);
+      loginMessage.className = "form-message error";
+    }
   }
 });
 
-// Handle Sign Up
-signupForm.addEventListener("submit", async (event) => {
+signupForm?.addEventListener("submit", async (event) => {
   event.preventDefault();
-  signupMessage.className = "form-message";
+  if (signupMessage) signupMessage.className = "form-message";
 
   const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value;
   const confirmPassword = document.getElementById("signup-confirm-password").value;
 
   if (password !== confirmPassword) {
-    signupMessage.textContent = "Passwords do not match.";
-    signupMessage.className = "form-message error";
+    if (signupMessage) {
+      signupMessage.textContent = "Passwords do not match.";
+      signupMessage.className = "form-message error";
+    }
     return;
   }
 
-  signupMessage.textContent = "Creating account...";
+  if (signupMessage) signupMessage.textContent = "Creating account...";
   try {
     await createUserWithEmailAndPassword(auth, email, password);
-    signupMessage.textContent = "";
+    if (signupMessage) signupMessage.textContent = "";
     signupForm.reset();
-    // Firebase automatically signs in the new user, triggering onAuthStateChanged
   } catch (error) {
-    signupMessage.textContent = friendlyAuthError(error.code);
-    signupMessage.className = "form-message error";
+    if (signupMessage) {
+      signupMessage.textContent = friendlyAuthError(error.code);
+      signupMessage.className = "form-message error";
+    }
   }
 });
 
-document.getElementById("logout-button").addEventListener("click", () => {
-  signupForm.hidden = true;
-  loginForm.hidden = false;
+document.getElementById("logout-button")?.addEventListener("click", () => {
+  if (signupForm && loginForm) {
+    signupForm.hidden = true;
+    loginForm.hidden = false;
+  }
   signOut(auth);
 });
 
@@ -95,79 +128,13 @@ function friendlyAuthError(code) {
   return messages[code] || "Authentication failed. Check your details and try again.";
 }
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    loginScreen.hidden = true;
-    appShell.hidden = false;
-    startDatabaseListeners();
-  } else {
-    appShell.hidden = true;
-    loginScreen.hidden = false;
-  }
-});
-
 let listenersStarted = false;
 let temperatureChart;
 let monitoringChart;
 const historyLabels = [];
 const historyValues = [];
 
-function startDatabaseListeners() {
-  if (listenersStarted) return;
-  listenersStarted = true;
-
-  const connectionRef = ref(database, ".info/connected");
-  onValue(connectionRef, (snapshot) => {
-    const connected = snapshot.val() === true;
-    document.getElementById("connection-label").textContent = connected ? "Database connected" : "Database offline";
-    document.getElementById("top-status").textContent = connected ? "DATABASE ONLINE" : "DATABASE OFFLINE";
-    document.getElementById("connection-dot").style.background = connected ? "#38c99c" : "#d97777";
-  });
-
-  onValue(ref(database, "sensors"), (snapshot) => {
-    const sensors = snapshot.val() || {};
-    setText(["temperature-value", "temperature-value-2"], formatValue(sensors.temperature));
-    setText(["humidity-value", "humidity-value-2"], formatValue(sensors.humidity));
-    document.getElementById("last-updated").textContent = new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"});
-    if (typeof sensors.temperature === "number") addTemperaturePoint(sensors.temperature);
-  });
-
-  onValue(ref(database, "ventilation"), (snapshot) => {
-    const ventilation = snapshot.val() || {};
-    const command = String(ventilation.command || "OFF").toUpperCase();
-    const mode = String(ventilation.mode || "MANUAL").toUpperCase();
-    const actualState = String(ventilation.actualState || "UNKNOWN").toUpperCase();
-    setFanDisplay(actualState);
-    setModeDisplay(mode);
-    const isManual = mode === "MANUAL";
-    ["turn-on", "turn-off", "turn-on-control", "turn-off-control"].forEach(id => {
-      document.getElementById(id).disabled = !isManual;
-    });
-    const note = isManual
-      ? `Latest requested command: ${command}. The physical fan status is reported separately.`
-      : "Automatic mode is selected. The controller should manage the fan using its programmed thresholds.";
-    setText(["control-message", "control-message-2"], note);
-  });
-
-  onValue(ref(database, "devices"), (snapshot) => {
-    const devices = snapshot.val() || {};
-    const nodes = ["master", "slave1"];
-    const onlineCount = nodes.filter(key => String(devices[key] || "").toLowerCase() === "online").length;
-    setText(["active-nodes-value", "active-nodes-value-2"], String(onlineCount));
-    nodes.forEach(key => {
-      const value = devices[key] || "unknown";
-      const ids = key === "master" ? ["master-status", "master-status-2"]
-        : ["slave1-status", "slave1-status-2"];
-      ids.forEach(id => {
-        const element = document.getElementById(id);
-        if (!element) return;
-        element.textContent = String(value);
-        element.className = "node-state " + (String(value).toLowerCase() === "online" ? "node-online" : "node-offline");
-      });
-    });
-  });
-
- function makeChartConfig() {
+function makeChartConfig() {
   return {
     type: "line",
     data: {
@@ -217,31 +184,119 @@ function startDatabaseListeners() {
 
 function createCharts() {
   if (typeof Chart === "undefined") return;
-  temperatureChart = new Chart(document.getElementById("temperatureChart"), makeChartConfig());
-  monitoringChart = new Chart(document.getElementById("monitoringChart"), makeChartConfig());
+  const tempCanvas = document.getElementById("temperatureChart");
+  const monCanvas = document.getElementById("monitoringChart");
+  if (tempCanvas && !temperatureChart) {
+    temperatureChart = new Chart(tempCanvas, makeChartConfig());
+  }
+  if (monCanvas && !monitoringChart) {
+    monitoringChart = new Chart(monCanvas, makeChartConfig());
+  }
 }
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    loginScreen.hidden = true;
+    appShell.hidden = false;
+    createCharts();
+    if (temperatureChart) temperatureChart.resize();
+    if (monitoringChart) monitoringChart.resize();
+    startDatabaseListeners();
+  } else {
+    appShell.hidden = true;
+    loginScreen.hidden = false;
+  }
+});
+
+function startDatabaseListeners() {
+  if (listenersStarted) return;
+  listenersStarted = true;
+
+  const connectionRef = ref(database, ".info/connected");
+  onValue(connectionRef, (snapshot) => {
+    const connected = snapshot.val() === true;
+    setText(["connection-label"], connected ? "Database connected" : "Database offline");
+    setText(["top-status"], connected ? "DATABASE ONLINE" : "DATABASE OFFLINE");
+    const dot = document.getElementById("connection-dot");
+    if (dot) dot.style.background = connected ? "#38c99c" : "#d97777";
+  });
+
+  onValue(ref(database, "sensors"), (snapshot) => {
+    const sensors = snapshot.val() || {};
+    setText(["temperature-value", "temperature-value-2"], formatValue(sensors.temperature));
+    setText(["humidity-value", "humidity-value-2"], formatValue(sensors.humidity));
+    setText(["last-updated"], new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+    if (typeof sensors.temperature === "number") addTemperaturePoint(sensors.temperature);
+  });
+
+  onValue(ref(database, "ventilation"), (snapshot) => {
+    const ventilation = snapshot.val() || {};
+    const command = String(ventilation.command || "OFF").toUpperCase();
+    const mode = String(ventilation.mode || "MANUAL").toUpperCase();
+    const actualState = String(ventilation.actualState || "UNKNOWN").toUpperCase();
+    setFanDisplay(actualState);
+    setModeDisplay(mode);
+    const isManual = mode === "MANUAL";
+    ["turn-on", "turn-off", "turn-on-control", "turn-off-control"].forEach((id) => {
+      const btn = document.getElementById(id);
+      if (btn) btn.disabled = !isManual;
+    });
+    const note = isManual
+      ? `Latest requested command: ${command}. The physical fan status is reported separately.`
+      : "Automatic mode is selected. The controller should manage the fan using its programmed thresholds.";
+    setText(["control-message", "control-message-2"], note);
+  });
+
+  onValue(ref(database, "devices"), (snapshot) => {
+    const devices = snapshot.val() || {};
+    const nodes = ["master", "slave1"];
+    const onlineCount = nodes.filter((key) => String(devices[key] || "").toLowerCase() === "online").length;
+    setText(["active-nodes-value", "active-nodes-value-2"], String(onlineCount));
+    nodes.forEach((key) => {
+      const value = devices[key] || "unknown";
+      const ids = key === "master"
+        ? ["master-status", "master-status-2"]
+        : ["slave1-status", "slave1-status-2"];
+      ids.forEach((id) => {
+        const element = document.getElementById(id);
+        if (!element) return;
+        element.textContent = String(value);
+        element.className = "node-state " + (String(value).toLowerCase() === "online" ? "node-online" : "node-offline");
+      });
+    });
+  });
 }
+
 function setFanDisplay(state) {
   const isOn = state === "ON";
   const known = state === "ON" || state === "OFF";
-  ["fan-status", "fan-status-control"].forEach(id => {
+  ["fan-status", "fan-status-control"].forEach((id) => {
     const el = document.getElementById(id);
+    if (!el) return;
     el.textContent = known ? (isOn ? "RUNNING" : "STOPPED") : "UNKNOWN";
     el.className = "state-pill " + (isOn ? "on" : "off");
   });
-  ["fan-title", "fan-title-control"].forEach(id => {
-    document.getElementById(id).textContent = known ? `Fan is ${state}` : "Waiting for hardware status";
+  ["fan-title", "fan-title-control"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = known ? `Fan is ${state}` : "Waiting for hardware status";
   });
-  ["fan-symbol", "fan-symbol-control"].forEach(id => {
-    document.getElementById(id).classList.toggle("spinning", isOn);
+  ["fan-symbol", "fan-symbol-control"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle("spinning", isOn);
   });
-  document.getElementById("fan-description").textContent = known
-    ? (isOn ? "The reported fan state is ON." : "The reported fan state is OFF.")
-    : "No actual fan state has been reported yet.";
+  setText(
+    ["fan-description"],
+    known
+      ? (isOn ? "The reported fan state is ON." : "The reported fan state is OFF.")
+      : "No actual fan state has been reported yet."
+  );
 }
+
 function setModeDisplay(mode) {
-  document.getElementById("mode-select").value = mode;
-  document.getElementById("mode-select-control").value = mode;
+  const m1 = document.getElementById("mode-select");
+  const m2 = document.getElementById("mode-select-control");
+  if (m1) m1.value = mode;
+  if (m2) m2.value = mode;
 }
 
 async function sendVentilationCommand(values) {
@@ -252,50 +307,37 @@ async function sendVentilationCommand(values) {
     setText(["control-message", "control-message-2"], `Could not update Firebase: ${error.message}`);
   }
 }
-document.getElementById("turn-on").addEventListener("click", () => sendVentilationCommand({command: "ON"}));
-document.getElementById("turn-off").addEventListener("click", () => sendVentilationCommand({command: "OFF"}));
-document.getElementById("turn-on-control").addEventListener("click", () => sendVentilationCommand({command: "ON"}));
-document.getElementById("turn-off-control").addEventListener("click", () => sendVentilationCommand({command: "OFF"}));
+
+document.getElementById("turn-on")?.addEventListener("click", () => sendVentilationCommand({ command: "ON" }));
+document.getElementById("turn-off")?.addEventListener("click", () => sendVentilationCommand({ command: "OFF" }));
+document.getElementById("turn-on-control")?.addEventListener("click", () => sendVentilationCommand({ command: "ON" }));
+document.getElementById("turn-off-control")?.addEventListener("click", () => sendVentilationCommand({ command: "OFF" }));
 
 function handleModeChange(value) {
-  sendVentilationCommand({mode: value});
+  sendVentilationCommand({ mode: value });
 }
-document.getElementById("mode-select").addEventListener("change", event => {
-  document.getElementById("mode-select-control").value = event.target.value;
-  handleModeChange(event.target.value);
-});
-document.getElementById("mode-select-control").addEventListener("change", event => {
-  document.getElementById("mode-select").value = event.target.value;
+
+document.getElementById("mode-select")?.addEventListener("change", (event) => {
+  const m2 = document.getElementById("mode-select-control");
+  if (m2) m2.value = event.target.value;
   handleModeChange(event.target.value);
 });
 
-function createCharts() {
-  if (typeof Chart === "undefined") return;
-  const config = {
-    type: "line",
-    data: { labels: historyLabels, datasets: [{
-      label: "Temperature (°C)", data: historyValues,
-      borderColor: "#0F94D2", backgroundColor: "rgba(15, 148, 210, 0.12)",
-      fill: true, tension: 0.38, borderWidth: 2, pointRadius: 3
-    }]},
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      animation: false, plugins: {legend: {display: false}},
-      scales: {
-        y: {grid: {color: "#edf1f4"}, ticks: {color: "#8996a2", font: {size: 10}}},
-        x: {grid: {display: false}, ticks: {color: "#8996a2", font: {size: 10}}}
-      }
-    }
-  };
-  temperatureChart = new Chart(document.getElementById("temperatureChart"), structuredClone(config));
-  monitoringChart = new Chart(document.getElementById("monitoringChart"), structuredClone(config));
-}
+document.getElementById("mode-select-control")?.addEventListener("change", (event) => {
+  const m1 = document.getElementById("mode-select");
+  if (m1) m1.value = event.target.value;
+  handleModeChange(event.target.value);
+});
+
 function addTemperaturePoint(value) {
-  const label = new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit", second: "2-digit"});
+  const label = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
   historyLabels.push(label);
   historyValues.push(value);
-  if (historyLabels.length > 20) { historyLabels.shift(); historyValues.shift(); }
-  [temperatureChart, monitoringChart].forEach(chart => {
+  if (historyLabels.length > 20) {
+    historyLabels.shift();
+    historyValues.shift();
+  }
+  [temperatureChart, monitoringChart].forEach((chart) => {
     if (chart) chart.update();
   });
 }
@@ -306,12 +348,15 @@ const pageDetails = {
   controls: ["System Controls", "Manage the ventilation unit and operating mode."],
   devices: ["Device Management", "View the master–slave sensor network."]
 };
-document.querySelectorAll(".nav-link").forEach(button => {
+
+document.querySelectorAll(".nav-link").forEach((button) => {
   button.addEventListener("click", () => {
     const selected = button.dataset.page;
-    document.querySelectorAll(".nav-link").forEach(item => item.classList.toggle("active", item === button));
-    document.querySelectorAll(".page").forEach(page => page.classList.toggle("active", page.id === `${selected}-page`));
-    document.getElementById("page-title").textContent = pageDetails[selected][0];
-    document.getElementById("page-subtitle").textContent = pageDetails[selected][1];
+    document.querySelectorAll(".nav-link").forEach((item) => item.classList.toggle("active", item === button));
+    document.querySelectorAll(".page").forEach((page) => page.classList.toggle("active", page.id === `${selected}-page`));
+    setText(["page-title"], pageDetails[selected][0]);
+    setText(["page-subtitle"], pageDetails[selected][1]);
+    if (selected === "monitoring" && monitoringChart) monitoringChart.resize();
+    if (selected === "overview" && temperatureChart) temperatureChart.resize();
   });
 });
