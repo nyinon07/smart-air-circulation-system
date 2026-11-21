@@ -1,4 +1,5 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-database.js";
 
@@ -12,15 +13,27 @@ const firebaseConfig = {
   appId: "1:488959251500:web:de0421c6cde04418282d89"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const database = getDatabase(app);
-
 const loginScreen = document.getElementById("login-screen");
 const appShell = document.getElementById("app-shell");
 const loginForm = document.getElementById("login-form");
 const loginMessage = document.getElementById("login-message");
+const signupForm = document.getElementById("signup-form");
+const signupMessage = document.getElementById("signup-message");
 
+// Toggle between Sign In and Sign Up forms
+document.getElementById("show-signup").addEventListener("click", () => {
+  loginForm.hidden = true;
+  signupForm.hidden = false;
+  loginMessage.textContent = "";
+});
+
+document.getElementById("show-login").addEventListener("click", () => {
+  signupForm.hidden = true;
+  loginForm.hidden = false;
+  signupMessage.textContent = "";
+});
+
+// Handle Sign In
 loginForm.addEventListener("submit", async (event) => {
   event.preventDefault();
   loginMessage.textContent = "Signing in...";
@@ -36,16 +49,50 @@ loginForm.addEventListener("submit", async (event) => {
   }
 });
 
-document.getElementById("logout-button").addEventListener("click", () => signOut(auth));
+// Handle Sign Up
+signupForm.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  signupMessage.className = "form-message";
+
+  const email = document.getElementById("signup-email").value.trim();
+  const password = document.getElementById("signup-password").value;
+  const confirmPassword = document.getElementById("signup-confirm-password").value;
+
+  if (password !== confirmPassword) {
+    signupMessage.textContent = "Passwords do not match.";
+    signupMessage.className = "form-message error";
+    return;
+  }
+
+  signupMessage.textContent = "Creating account...";
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    signupMessage.textContent = "";
+    signupForm.reset();
+    // Firebase automatically signs in the new user, triggering onAuthStateChanged
+  } catch (error) {
+    signupMessage.textContent = friendlyAuthError(error.code);
+    signupMessage.className = "form-message error";
+  }
+});
+
+document.getElementById("logout-button").addEventListener("click", () => {
+  signupForm.hidden = true;
+  loginForm.hidden = false;
+  signOut(auth);
+});
 
 function friendlyAuthError(code) {
   const messages = {
     "auth/invalid-credential": "Incorrect email or password.",
     "auth/user-not-found": "No account was found for this email.",
     "auth/too-many-requests": "Too many attempts. Please try again later.",
-    "auth/invalid-email": "Please enter a valid email address."
+    "auth/invalid-email": "Please enter a valid email address.",
+    "auth/email-already-in-use": "An account with this email already exists.",
+    "auth/weak-password": "Password should be at least 6 characters.",
+    "auth/operation-not-allowed": "Email/password sign-up is not enabled in Firebase."
   };
-  return messages[code] || "Unable to sign in. Check your details and try again.";
+  return messages[code] || "Authentication failed. Check your details and try again.";
 }
 
 onAuthStateChanged(auth, (user) => {
